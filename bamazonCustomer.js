@@ -60,17 +60,12 @@ let purchaseItem = () => {
             .then(function (answer) {
 
                 connection.query('SELECT * FROM bamazon.products', function (err, res) {
-
                     let pickedItem;
                     for (let i = 0; i < res.length; i++) {
                         if (res[i].item_id === answer.item_id) {
                             pickedItem = res[i];
-                            // console.log(pickedItem);
-                            // console.log(answer);
-
                         }
                     }
-
                     if (pickedItem.stock_quantity >= parseInt(answer.quantity)) {
                         function makePurchase(product, quantity) {
                             connection.query(
@@ -79,20 +74,15 @@ let purchaseItem = () => {
                                 function (err, res) {
                                     // Let the user know the purchase was successful, re-run loadProducts
                                     console.log(chalk.green("Your total is $" + parseInt(answer.quantity) * pickedItem.price));
-
-
                                 }
                             );
                         }
                         makePurchase(pickedItem, answer.quantity);
-
                     }
                     else {
                         console.log(chalk.red(`Sorry ${pickedItem.item_id} is not available at this time. You should have bought it sooner`));
                     }
-
                     continueShopping();
-
                 })
             })
             .catch(function (err) {
@@ -110,7 +100,6 @@ function validateInput(value) {
         return 'Please enter a whole non-zero number.';
     }
 }
-
 
 function continueShopping() {
     inquirer.prompt([{

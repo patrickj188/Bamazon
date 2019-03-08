@@ -14,32 +14,15 @@ let connection = mysql.createConnection({
 connection.connect(function (err) {
     if (err) throw err;
     console.log('connected as id ' + connection.threadId + "\n")
-   managerView();
+    managerView();
 
 })
 
 
-let inventory = () => {
-    connection.query('SELECT * FROM bamazon.products', function (err, res) {
-        if (err) throw err;
-
-        for (let i = 0; i < res.length; i++) {
-            console.log(chalk.cyan(`Item# -- ${res[i].item_id} \n`,
-                `Product -- ${res[i].product_name}  \n`,
-                `Department -- ${res[i].department_name} \n`,
-                `Price -- $${res[i].price} \n`,
-                `Stock -- ${res[i].stock_quantity} \n`,
-                `------------------------------------------------ \x1b[1m`
-            ))
-        }
-        managerView();
-    });
-}
-
 let managerView = () => {
     inquirer.prompt([{
         type: "list",
-        name: "manger",
+        name: "manager",
         message: "Welcome manager, what do you need to do?",
         choices: ["View Inventory", "View out of stock items", "Add Inventory", "Add new Inventory"]
     }]).then(function (answer) {
@@ -62,6 +45,26 @@ let managerView = () => {
         }
     });
 
+
+}
+
+
+let inventory = () => {
+    connection.query('SELECT * FROM bamazon.products', function (err, res) {
+        if (err) throw err;
+        // console.log("you made it");
+
+        for (let i = 0; i < res.length; i++) {
+            console.log(chalk.cyan(`Item# -- ${res[i].item_id} \n`,
+                `Product -- ${res[i].product_name}  \n`,
+                `Department -- ${res[i].department_name} \n`,
+                `Price -- $${res[i].price} \n`,
+                `Stock -- ${res[i].stock_quantity} \n`,
+                `------------------------------------------------ \x1b[1m`
+            ))
+        }
+        managerView();
+    });
 }
 
 let newInventory = () => {
@@ -98,30 +101,36 @@ let newInventory = () => {
 
     }
 
-]).then(function(answer){
-    connection.query('INSERT INTO bamazon.products SET ?', {
-        product_name: answer.product,
-        department_name: answer.departments,
-        price: answer.price,
-        stock_quantity: answer.quantity
-    },
-    function(res, err){
-        if(err) throw err;
-        console.log('Product was added to inventory')
+    ]).then(function (answer) {
+        connection.query('INSERT INTO bamazon.products SET ?', {
+            product_name: answer.product,
+            department_name: answer.departments,
+            price: answer.price,
+            stock_quantity: answer.quantity
+        },
+            function (err, res) {
+                if (err) throw err;
+                console.log('Product was added to inventory')
+            })
+        managerView();
     })
-    managerView();
-})
 }
 
 
 let addInventory = () => {
-    connection.query('SELECT * FROM bamazon.products', function (res, err) {
+    connection.query('SELECT * FROM bamazon.products', function (err,res) {
         if (err) throw err;
+
+        let items = [];
+        for (let i = 0; i < res.length; i++) {
+            items.push(res[i].product_name);
+        }
+        console.log(items);
     })
     inquirer.prompt([{
         type: "input",
         name: 'product',
-        message: 'What item woulf you like to add to?'
+        message: 'What item would you like to add to?',
     },
     {
         type: 'input',
@@ -130,22 +139,23 @@ let addInventory = () => {
     }
     ]).then(function (answer) {
         let currentQuantity;
-        for (let i = 0; res.length; i++) {
+        for (let i = 0; i < res.length; i++) {
             if (res[i].product_name === answer.product) {
                 currentQuantity = res[i].stock_quantity;
             }
         }
 
         connection.query('UPDATE bamazon.products SET ? WHERE ?'[{
-            stock_quantity: currentQuantity + parseInt(answer.stock_quantity)
+            stock_quantity: currentQuantity + parseInt(answer.quantity)
         }, {
-                product_name: answer.product_name
-            }
-        ], function (res, err) {
-            if (err) throw err;
-            console.log('The quantity was updated.');
+                product_name: answer.product
+            }],
+            function (err) {
+                if(err) throw err;
+                console.log('The quantity was updated.');
+            });
+
             managerView();
-        });
     })
 }
 

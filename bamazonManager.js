@@ -114,7 +114,6 @@ let newInventory = () => {
 
 
 let addInventory = () => {
-    let items = [];
     connection.query('SELECT * FROM bamazon.products', function (err, res) {
         if (err) return console.log(err)
         const items = res.map(x => x.product_name);
@@ -136,7 +135,6 @@ let addInventory = () => {
                     console.log('The quantity was updated.');
                     managerView();
                 });
-
         })
     })
 }

@@ -48,11 +48,9 @@ let managerView = () => {
 
 }
 
-
 let inventory = () => {
     connection.query('SELECT * FROM bamazon.products', function (err, res) {
         if (err) throw err;
-        // console.log("you made it");
 
         for (let i = 0; i < res.length; i++) {
             console.log(chalk.cyan(`Item# -- ${res[i].item_id} \n`,
@@ -68,95 +66,102 @@ let inventory = () => {
 }
 
 let newInventory = () => {
-    let departments = [];
-
-    connection.query('SELECT * FROM bamazon.products.department_name', function (res, err) {
+    connection.query('SELECT DISTINCT department_name FROM bamazon.products', function (err, res) {
         if (err) throw err;
 
-        for (let i = 0; i < res.length; i++) {
-            departments.push(res[i].department_name);
-        }
-    })
-
-    inquirer.prompt([{
-        type: 'input',
-        name: 'product',
-        message: 'Product Name: '
-    },
-    {
-        type: 'list',
-        name: 'departments',
-        message: 'Department: ',
-        choices: departments
-    },
-    {
-        type: 'input',
-        name: 'price',
-        message: "Item Price: "
-    },
-    {
-        type: "input",
-        name: 'quantity',
-        message: 'Item Quantity: '
-
-    }
-
-    ]).then(function (answer) {
-        connection.query('INSERT INTO bamazon.products SET ?', {
-            product_name: answer.product,
-            department_name: answer.departments,
-            price: answer.price,
-            stock_quantity: answer.quantity
+        const departments = res.map(x => x.department_name)
+        inquirer.prompt([{
+            type: 'input',
+            name: 'product',
+            message: 'Product Name: '
         },
-            function (err, res) {
-                if (err) throw err;
-                console.log('Product was added to inventory')
+        {
+            type: 'list',
+            name: 'departments',
+            message: 'Department: ',
+            choices: departments
+        },
+        {
+            type: 'input',
+            name: 'price',
+            message: "Item Price: "
+        },
+        {
+            type: "input",
+            name: 'quantity',
+            message: 'Item Quantity: '
+
+        }
+
+        ]).then(function (answer) {
+            connection.query('INSERT INTO bamazon.products SET ?', {
+                product_name: answer.product,
+                department_name: answer.departments,
+                price: answer.price,
+                stock_quantity: answer.quantity
+            },
+                function (err, res) {
+                    if (err) throw err;
+                    console.log('Product was added to inventory')
+                    managerView();
+                })
+        })
+            .catch(function (err) {
+                console.log('Catch an error: ', err);
             })
-        managerView();
     })
 }
 
 
 let addInventory = () => {
-    connection.query('SELECT * FROM bamazon.products', function (err,res) {
-        if (err) throw err;
-
-        let items = [];
-        for (let i = 0; i < res.length; i++) {
-            items.push(res[i].product_name);
+    let items = [];
+    connection.query('SELECT * FROM bamazon.products', function (err, res) {
+        if (err) return console.log(err)
+        const items = res.map(x => x.product_name);
+        inquirer.prompt([{
+            type: "list",
+            name: 'product',
+            message: 'What item would you like to add to?',
+            choices: items
+        },
+        {
+            type: 'input',
+            name: 'quantity',
+            message: 'How many new items would you like to add?'
         }
-        console.log(items);
-    })
-    inquirer.prompt([{
-        type: "input",
-        name: 'product',
-        message: 'What item would you like to add to?',
-    },
-    {
-        type: 'input',
-        name: 'quantity',
-        message: 'How many new items would you like to add?'
-    }
-    ]).then(function (answer) {
-        let currentQuantity;
-        for (let i = 0; i < res.length; i++) {
-            if (res[i].product_name === answer.product) {
-                currentQuantity = res[i].stock_quantity;
-            }
-        }
+        ]).then(function (answer) {
+            connection.query(`UPDATE bamazon.products SET stock_quantity = ${answer.quantity} WHERE product_name = '${answer.product}'`,
+                function (err, res) {
+                    if (err) throw err;
+                    console.log('The quantity was updated.');
+                    managerView();
+                });
 
-        connection.query('UPDATE bamazon.products SET ? WHERE ?'[{
-            stock_quantity: currentQuantity + parseInt(answer.quantity)
-        }, {
-                product_name: answer.product
-            }],
-            function (err) {
-                if(err) throw err;
-                console.log('The quantity was updated.');
-            });
-
-            managerView();
+        })
     })
 }
+
+
+let lowInventory = () => {
+    connection.query('SELECT * FROM bamazon.products', function (err, res) {
+        if (err) throw err;
+        res.forEach(item => {
+            if (item.stock_quantity <= 3) {
+                console.log(chalk.cyan(`Item# -- ${item.item_id} \n`,
+                    `Product -- ${item.product_name}  \n`,
+                    `Department -- ${item.department_name} \n`,
+                    `Price -- $${item.price} \n`,
+                    `Stock -- ${item.stock_quantity} \n`,
+                    `------------------------------------------------ \x1b[1m`
+                ))
+            }
+        })
+        managerView();
+    })
+}
+
+
+
+
 
 

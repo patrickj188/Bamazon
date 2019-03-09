@@ -141,7 +141,6 @@ let addInventory = () => {
     })
 }
 
-
 let lowInventory = () => {
     connection.query('SELECT * FROM bamazon.products', function (err, res) {
         if (err) throw err;

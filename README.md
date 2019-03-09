@@ -27,7 +27,8 @@ Customer side - run 'node bamazonCustomer.js'
 ## bamazonManger.js 
 
 ### How it functions
-* * ![alt text](https://github.com/patrickj188/Bamazon/blob/master/images/ManagerView.gif)
+* ![alt text](https://github.com/patrickj188/Bamazon/blob/master/images/managerViewV2.gif)
+* ![alt text](https://github.com/patrickj188/Bamazon/blob/master/images/ManagerView.gif)
 
 
 Manager side - run 'node bamazonManager.js'

@@ -19,6 +19,9 @@ connection.connect(function (err) {
 })
 
 // this displays al the stores items
+
+
+
 let inventory = () => {
     connection.query('SELECT * FROM bamazon.products', function (err, res) {
         if (err) throw err;

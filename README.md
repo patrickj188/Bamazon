@@ -13,7 +13,7 @@ Buy the greatest products on the internet or in the world here!
 ## bamazonCustomer.js
 
 ### How it functions
-* ![alt text](https://github.com/patrickj188/Bamazon/blob/master/images/customergif.gif)
+* ![alt text](https://github.com/patrickj188/Bamazon/blob/master/images/CustomerView.gif)
 
 Customer side - run 'node bamazonCustomer.js'
   * Once it starts, the customer will see all the products Bamzon has to offer. 
@@ -27,7 +27,7 @@ Customer side - run 'node bamazonCustomer.js'
 ## bamazonManger.js 
 
 ### How it functions
-* 
+* * ![alt text](https://github.com/patrickj188/Bamazon/blob/master/images/ManagerView.gif)
 
 
 Manager side - run 'node bamazonManager.js'
@@ -36,6 +36,10 @@ Manager side - run 'node bamazonManager.js'
       * View low Inventory 
       * Add Inventory
       * Add new Inventory
+  * The manager has options to add new inventory and replenish inventory quantity. 
+  ![alt text](https://github.com/patrickj188/Bamazon/blob/master/images/openingManager.png)
+  ![alt text](https://github.com/patrickj188/Bamazon/blob/master/images/quantityAdd.pmg.png)
+  ![alt text](https://github.com/patrickj188/Bamazon/blob/master/images/itemAdd.png)
 
 
 

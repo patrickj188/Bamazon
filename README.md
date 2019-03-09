@@ -17,9 +17,9 @@ Buy the greatest products on the internet or in the world here!
 
 Customer side - run 'node bamazonCustomer.js'
   * Once it starts, the customer will see all the products Bamzon has to offer. 
-  * A prompt will ask the you, the customer, to enter a products ID. 
+  * A prompt will ask you, the customer, to enter the ID of a product.
   * After inputting the ID, the customer will be asked how many items they would like to purchase.
-  * Once the purchase goes through it wil populated the total cost and ask the customer if they would like to contiune shopping.
+  * Once the purchase goes through it will populate the total cost and ask the customer if they would like to continue shopping.
    ![alt text](https://github.com/patrickj188/Bamazon/blob/master/images/eachproduct.png)
    ![alt text](https://github.com/patrickj188/Bamazon/blob/master/images/prompt.png)
 
